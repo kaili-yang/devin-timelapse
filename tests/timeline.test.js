@@ -100,10 +100,10 @@ test('helpers', () => {
 test('HTML inlines data safely and works offline', (t) => {
   const s = buildStore();
   t.after(s.cleanup);
-  const html = buildHtml(buildTimeline(loadSession(s.file, 's1')), { lang: 'zh' });
+  const html = buildHtml(buildTimeline(loadSession(s.file, 's1')));
   assert.equal((html.match(/<\/script>/g) || []).length, 2, 'the prompt containing </script> must not end the data block');
   assert.ok(!/src=["']https?:/.test(html), 'no external resources');
-  assert.match(html, /lang="zh-CN"/);
+  assert.match(html, /lang="en"/);
   assert.equal(inlineJson({ a: '</script>\u2028' }), '{"a":"\\u003c/script>\\u2028"}');
 });
 

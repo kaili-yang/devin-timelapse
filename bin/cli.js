@@ -21,7 +21,6 @@ Usage: npx devin-timelapse [session-id] [options]
   --out <file>      .mp4 (default), .gif, or .html
   --fps <n>         frames per second for video (default 30)
   --redact          hide prompt text, code, file names and command arguments
-  --lang zh|en      labels (default: system locale)
   --db <path>       Devin session store (default: ${defaultDbPath()})
   --no-open         do not open the result
   -h, --help
@@ -46,12 +45,11 @@ async function main() {
     allowPositionals: true,
     options: {
       list: { type: 'boolean' }, seconds: { type: 'string' }, out: { type: 'string' }, fps: { type: 'string', default: '30' },
-      redact: { type: 'boolean' }, lang: { type: 'string' }, db: { type: 'string' }, 'no-open': { type: 'boolean' }, help: { type: 'boolean', short: 'h' },
+      redact: { type: 'boolean' }, db: { type: 'string' }, 'no-open': { type: 'boolean' }, help: { type: 'boolean', short: 'h' },
     },
   });
   if (values.help) return console.log(HELP);
   const db = values.db || defaultDbPath();
-  const lang = values.lang === 'zh' || values.lang === 'en' ? values.lang : (/^zh/i.test(Intl.DateTimeFormat().resolvedOptions().locale) ? 'zh' : 'en');
 
   if (values.list) {
     for (const s of listSessions(db, 20)) console.log(`${s.id.padEnd(24)} ${ago(s.lastActivityAt).padStart(8)}  ${String(s.messages).padStart(5)} msgs  ${s.title}`);
@@ -72,7 +70,7 @@ async function main() {
   const out = path.resolve(values.out || `devin-timelapse-${id}.mp4`);
   const htmlPath = out.toLowerCase().endsWith('.html') ? out : out.replace(/\.(mp4|gif)$/i, '') + '.html';
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  fs.writeFileSync(htmlPath, buildHtml(timeline, { lang }));
+  fs.writeFileSync(htmlPath, buildHtml(timeline));
   let result = htmlPath;
   if (!out.toLowerCase().endsWith('.html')) {
     const browser = findBrowser();
@@ -81,7 +79,7 @@ async function main() {
     } else {
       const t0 = Date.now();
       await renderVideo(timeline, {
-        out, fps, lang, browser,
+        out, fps, browser,
         onProgress: (done, total) => { if (process.stdout.isTTY && (done % 15 === 0 || done === total)) process.stdout.write(`\r  rendering ${done}/${total} frames`); },
       });
       if (process.stdout.isTTY) process.stdout.write('\n');

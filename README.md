@@ -1,9 +1,7 @@
 # devin-timelapse
 
-**把一次 Devin 会话剪成 30 秒延时视频。** 你的指令、Devin 敲的命令、改的代码 diff、飞速转动的时钟，
-还有不断上涨的计数器：工具调用、文件、改动行数。适合发 X、即刻、B 站。
-
-Turn a Devin session into a 30-second timelapse: prompts, commands, diffs, a fast-forward clock and running counters.
+**Turn a Devin session into a 30-second timelapse video.** Your prompts, the commands Devin runs, the diffs it writes,
+a fast-forward clock and climbing counters (tool calls, files, lines changed). Made for posting.
 
 ![Devin Timelapse demo](docs/demo.gif)
 
@@ -51,7 +49,6 @@ on the clock.
 | `--out <file>` | `.mp4`, `.gif` or `.html` |
 | `--fps <n>` | default 30 |
 | `--redact` | replaces prompt text, code, file names and command arguments with `•` (keeps program names and file extensions) |
-| `--lang zh\|en` | labels (default: system locale) |
 | `--db <path>` | another session store (or `DEVIN_SESSIONS_DB`) |
 | `--no-open` | don't open the result |
 

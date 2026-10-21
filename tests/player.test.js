@@ -29,11 +29,11 @@ function fakeContext(log) {
   });
 }
 
-function loadPlayer(timeline, lang = 'en') {
+function loadPlayer(timeline) {
   const log = { bad: [], text: [] };
   const ctx = fakeContext(log);
   const canvas = { width: 0, height: 0, getContext: () => ctx, toDataURL: () => 'data:image/jpeg;base64,AA==' };
-  const window = { TIMELAPSE: { ...timeline, lang }, TIMELAPSE_EXPORT: true };
+  const window = { TIMELAPSE: timeline, TIMELAPSE_EXPORT: true };
   const sandbox = { window, document: { getElementById: () => canvas }, performance: { now: () => 0 }, requestAnimationFrame: () => {}, console };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '..', 'public', 'player.js'), 'utf8'), sandbox);
   return { window, log };
@@ -43,8 +43,8 @@ test('every frame renders without exceptions or non-finite coordinates', (t) => 
   const s = buildStore();
   t.after(s.cleanup);
   const timeline = buildTimeline(loadSession(s.file, 's1'), { seconds: 16 });
-  for (const lang of ['en', 'zh']) {
-    const { window, log } = loadPlayer(timeline, lang);
+  {
+    const { window, log } = loadPlayer(timeline);
     assert.equal(window.__ready, true);
     for (let f = 0; f <= 16 * 10; f++) {
       log.text.length = 0;

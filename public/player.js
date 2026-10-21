@@ -6,25 +6,22 @@
   const W = 1280;
   const H = 720;
   const TL = window.TIMELAPSE;
-  const ZH = (TL.lang || '').startsWith('zh');
   const SANS = '-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", "Segoe UI", sans-serif';
   const MONO = '"SF Mono", Menlo, Consolas, "PingFang SC", "Noto Sans Mono CJK SC", monospace';
   const C = { bg1: '#0b1020', bg2: '#1c1040', panel: '#121729', panel2: '#0d1117', line: '#262b45', text: '#eef0ff', dim: '#8f93b8', teal: '#2ee6c5', violet: '#a77bff', pink: '#ff6bb5', yellow: '#ffd166', red: '#ff5d73', green: '#3fb950' };
   const KIND = {
-    prompt: { color: '#ffffff', label: ZH ? '你的指令' : 'You asked' },
-    say: { color: C.violet, label: ZH ? 'Devin 说' : 'Devin says' },
-    exec: { color: C.teal, label: ZH ? '跑命令' : 'Command' },
-    edit: { color: C.pink, label: ZH ? '改代码' : 'Edit' },
-    read: { color: '#7aa2ff', label: ZH ? '读代码' : 'Read' },
-    web: { color: C.yellow, label: ZH ? '查资料' : 'Web' },
-    plan: { color: C.violet, label: ZH ? '做计划' : 'Plan' },
-    ask: { color: C.yellow, label: ZH ? '提问' : 'Question' },
-    delegate: { color: C.violet, label: ZH ? '派活' : 'Subagent' },
-    tool: { color: C.dim, label: ZH ? '工具' : 'Tool' },
+    prompt: { color: '#ffffff', label: 'You asked' },
+    say: { color: C.violet, label: 'Devin says' },
+    exec: { color: C.teal, label: 'Command' },
+    edit: { color: C.pink, label: 'Edit' },
+    read: { color: '#7aa2ff', label: 'Read' },
+    web: { color: C.yellow, label: 'Web' },
+    plan: { color: C.violet, label: 'Plan' },
+    ask: { color: C.yellow, label: 'Question' },
+    delegate: { color: C.violet, label: 'Subagent' },
+    tool: { color: C.dim, label: 'Tool' },
   };
-  const L = ZH
-    ? { tools: '次工具调用', files: '个文件', lines: '行改动', commands: '条命令', of: (a, b) => `${a} 的工作，压缩成 ${b} 秒`, summary: '这一次 Devin 一共', footer: '用 devin-timelapse 生成 · npx github:kaili-yang/devin-timelapse', activity: '动态', errors: '次报错' }
-    : { tools: 'tool calls', files: 'files', lines: 'lines changed', commands: 'commands', of: (a, b) => `${a} of work in ${b} seconds`, summary: 'In this session Devin made', footer: 'made with devin-timelapse · npx github:kaili-yang/devin-timelapse', activity: 'Activity', errors: 'errors' };
+  const L = { tools: 'tool calls', files: 'files', lines: 'lines changed', commands: 'commands', of: (a, b) => `${a} of work in ${b} seconds`, summary: 'In this session Devin made', footer: 'made with devin-timelapse · npx github:kaili-yang/devin-timelapse', activity: 'Activity', errors: 'errors' };
 
   const events = TL.events;
   const featured = events.filter((e) => e.featured);
@@ -83,9 +80,9 @@
   }
   function fmtDur(ms) {
     const m = Math.round(ms / 60000);
-    if (m < 60) return ZH ? `${Math.max(1, m)} 分钟` : `${Math.max(1, m)} min`;
+    if (m < 60) return `${Math.max(1, m)} min`;
     const h = Math.floor(m / 60);
-    return ZH ? `${h} 小时 ${m % 60} 分` : `${h}h ${m % 60}m`;
+    return `${h}h ${m % 60}m`;
   }
   function clock(ts) {
     const d = new Date(ts);
@@ -123,7 +120,7 @@
     text(clock(realAt(t)), W - 32, 66, C.text, 'right');
     const speed = TL.meta.realMs > 0 ? Math.round(TL.meta.realMs / 1000 / (TL.duration - TL.intro - TL.outro)) : 1;
     font(14, 600);
-    text(`${new Date(TL.meta.start).toLocaleDateString(ZH ? 'zh-CN' : 'en-US')}  ·  ×${speed}`, W - 32, 92, C.dim, 'right');
+    text(`${new Date(TL.meta.start).toLocaleDateString('en-US')}  ·  ×${speed}`, W - 32, 92, C.dim, 'right');
   }
 
   const PX = 32;
@@ -158,7 +155,7 @@
     if (p > 0.7 && e.error) {
       rect(PX + PW - 140, PY + PH - 64, 104, 32, C.red, 8);
       font(15, 700);
-      text(ZH ? '失败' : 'FAILED', PX + PW - 88, PY + PH - 42, '#1a0d12', 'center');
+      text('FAILED', PX + PW - 88, PY + PH - 42, '#1a0d12', 'center');
     } else if (p > 0.7 && lines.length) {
       font(15, 700);
       text('✓', PX + PW - 48, PY + PH - 40, C.green, 'center');
@@ -186,7 +183,7 @@
     const a = ease(p / 0.25);
     g.globalAlpha = a;
     font(16, 700);
-    text(ZH ? '你' : 'You', PX + 40, PY + 104, C.dim);
+    text('You', PX + 40, PY + 104, C.dim);
     font(30, 600);
     wrap(e.text, PW - 90, 8).forEach((l, i) => text(l, PX + 40, PY + 150 + i * 44, C.text));
     g.globalAlpha = 1;
@@ -341,7 +338,7 @@
     font(54, 800);
     wrap(TL.meta.title, W - 200, 2).forEach((l, i) => text(l, W / 2, 330 + i * 66, C.text, 'center'));
     font(22, 500);
-    text([TL.meta.project, new Date(TL.meta.start).toLocaleString(ZH ? 'zh-CN' : 'en-US', { dateStyle: 'medium', timeStyle: 'short' })].filter(Boolean).join('  ·  '), W / 2, 470, C.dim, 'center');
+    text([TL.meta.project, new Date(TL.meta.start).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })].filter(Boolean).join('  ·  '), W / 2, 470, C.dim, 'center');
     font(26, 700);
     text(L.of(fmtDur(TL.meta.realMs), Math.round(TL.duration)), W / 2, 530, C.pink, 'center');
     g.globalAlpha = 1;
