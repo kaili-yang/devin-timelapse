@@ -1,0 +1,15 @@
+{
+  "name": "devin-timelapse",
+  "version": "0.1.0",
+  "description": "Turn a Devin session into a 30-second timelapse video: prompts, commands, diffs and a fast-forward clock. Self-contained HTML player plus MP4 export. Local, zero dependencies.",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/kaili-yang/devin-timelapse.git" },
+  "homepage": "https://github.com/kaili-yang/devin-timelapse#readme",
+  "engines": { "node": ">=22.13" },
+  "bin": { "devin-timelapse": "bin/cli.js" },
+  "files": ["bin", "lib", "public"],
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": ["devin", "timelapse", "video", "ai-agents", "devin-cli", "screen-recording"]
+}
